@@ -17,9 +17,9 @@ class LocalDataset(Dataset):
         self.transform = transform
 
     def __getitem__(self, index):
-        f,_,_,_,_,c = self.images[index]
+        f,c = self.images[index]
 
-        im = Image.open(path.join(self.base_path, f))
+        im = Image.open(path.join(self.base_path + "/" + str(c), f))
 
         if self.transform is not None:
             im = self.transform(im)
@@ -32,16 +32,18 @@ class LocalDataset(Dataset):
         return len(self.images)
 
 # Algorithms to calculate mean and standard_deviation
-dataset = LocalDataset("images", "training_list.csv", transform=transforms.ToTensor())
+dataset = LocalDataset("images/train", "training.csv", transform=transforms.ToTensor())
 
 # Mean
-#m = torch.zeros(3)
-#for sample in dataset:
-#    m += sample['image'].sum(1).sum(1)
-#m /= len(dataset)*256*144
+m = torch.zeros(3)
+for sample in dataset:
+   m += sample['image'].sum(1).sum(1)
+m /= len(dataset)*256*144
+# m = tensor([0.5919, 0.5736, 0.5826])
 
 # Standard Deviation
-#s = torch.zeros(3)
-#for sample in dataset:
-#    s+=((sample['image']-m.view(3,1,1))**2).sum(1).sum(1)
-#s=torch.sqrt(s/(len(dataset)*256*144))
+s = torch.zeros(3)
+for sample in dataset:
+   s+=((sample['image']-m.view(3,1,1))**2).sum(1).sum(1)
+s=torch.sqrt(s/(len(dataset)*256*144))
+# s = tensor([0.3939, 0.3880, 0.3995])

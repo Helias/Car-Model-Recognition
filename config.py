@@ -11,9 +11,9 @@ THREADS = 8
 
 # file paths
 IMAGES_PATH = "images"
-TRAINING_PATH = "training_list.csv"
-VALIDATION_PATH = "validation_list.csv"
-TEST_PATH = "validation_list.csv"
+TRAINING_PATH = "training.csv"
+VALIDATION_PATH = "validation.csv"
+TEST_PATH = "validation.csv"
 
 RESULTS_PATH="results"
 
