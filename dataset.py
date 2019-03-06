@@ -86,20 +86,19 @@ def preprocessing():
     test_csv_file.close()
 
     # Algorithms to calculate mean and standard_deviation
+    print("Loading dataset...")
     dataset = LocalDataset(IMAGES_PATH, TRAINING_PATH, transform=transforms.ToTensor())
-    # Mean
-    m = torch.zeros(3)
+    print("Calculate mean & dev std...")
+    
+    m = torch.zeros(3) # Mean
+    s = torch.zeros(3) # Standard Deviation
     for sample in dataset:
         m += sample['image'].sum(1).sum(1)
-    m /= len(dataset)*256*144
-
-    # Standard Deviation
-    s = torch.zeros(3)
-    for sample in dataset:
         s+=((sample['image']-m.view(3,1,1))**2).sum(1).sum(1)
+    m /= len(dataset)*256*144    
     s=torch.sqrt(s/(len(dataset)*256*144))
 
-    print("Calculated mean and standard deviation")
+    print("Calculated mean and standard deviation!")
     print(m)
     print(s)
     file = open("mean_devstd.txt", "w+")
