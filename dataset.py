@@ -20,18 +20,21 @@ i = 0
 for d in dirs:
     d = d.replace(IMAGES_PATH, "")
     d = d.replace("/", "")
+    if " " in d:
+        d = d.replace(" ", "_")
     num_classes[d] = i
     i+=1
 
 # read mean and dev. standard pre-computed
 m = 0
 s = 0
-if os.path.isfile('./mean_devstd.txt') :
+if os.path.isfile('./mean_devstd.txt'):
     m_s = open("mean_devstd.txt", "r").read()
-    m_s = m_s.replace("\n", "")
-    m_s = m_s.split(",")
-    m = m_s[0]
-    s = m_s[1]
+    if "," in m_s:
+        m_s = m_s.replace("\n", "")
+        m_s = m_s.split(",")
+        m = m_s[0]
+        s = m_s[1]
 
 def get_class(idx):
     for key in num_classes:
@@ -45,6 +48,10 @@ def preprocessing():
     class_files_testing  = []
 
     for key in num_classes:
+        if " " in key:
+            os.rename(IMAGES_PATH+"/"+key, IMAGES_PATH+"/"+key.replace(" ", "_"))
+            key = key.replace(" ", "_")
+
         class_files = glob(IMAGES_PATH+"/"+str(key)+"/*")
         class_files = [w.replace(IMAGES_PATH+"/"+str(key)+"/", "") for w in class_files]
         class_files.sort()
@@ -53,15 +60,21 @@ def preprocessing():
         class_files_testing = class_files[int(len(class_files)*.66)+1 :] # get 33% class images fo training
 
         for f in class_files_training:
-            if "," in f:
-                os.rename(IMAGES_PATH+"/"+key+"/"+f, IMAGES_PATH+"/"+key+"/"+f.replace(",",""))
-                f = f.replace(",", "")
+            if "," in f or "#" in f or " " in f:
+                tmp_f = f.replace(",", "")
+                tmp_f = tmp_f.replace("#", "")
+                tmp_f = tmp_f.replace(" ", "_")
+                os.rename(IMAGES_PATH+"/"+key+"/"+f, IMAGES_PATH+"/"+key+"/"+tmp_f)
+                f = tmp_f
             train_csv += f + ","+str(key)+"\n"
 
         for f in class_files_testing:
-            if "," in f:
-                os.rename(IMAGES_PATH+"/"+key+"/"+f, IMAGES_PATH+"/"+key+"/"+f.replace(",",""))
-                f = f.replace(",", "")
+            if "," in f or "#" in f or " " in f:
+                tmp_f = f.replace(",", "")
+                tmp_f = tmp_f.replace("#", "")
+                tmp_f = tmp_f.replace(" ", "_")
+                os.rename(IMAGES_PATH+"/"+key+"/"+f, IMAGES_PATH+"/"+key+"/"+tmp_f)
+                f = tmp_f
             test_csv += f + ","+str(key)+"\n"
 
     train_csv_file = open("train_file.csv", "w+")
@@ -90,7 +103,7 @@ def preprocessing():
     print(m)
     print(s)
     file = open("mean_devstd.txt", "w+")
-    file.write(m+","+s)
+    file.write(str(m)+","+str(s))
     file.close()
 #preprocessing()
 
@@ -99,7 +112,7 @@ class LocalDataset(Dataset):
 
     def __init__(self, base_path, txt_list, transform=None):
         self.base_path=base_path
-        self.images = np.loadtxt(txt_list,dtype=str,delimiter=',')
+        self.images = np.genfromtxt(txt_list,delimiter=',',dtype='str')
         self.transform = transform
 
     def __getitem__(self, index):
