@@ -33,8 +33,8 @@ if os.path.isfile('./mean_devstd.txt'):
     if "," in m_s:
         m_s = m_s.replace("\n", "")
         m_s = m_s.split(",")
-        m = m_s[0]
-        s = m_s[1]
+        m = torch.Tensor( [int(m_s[0]), int(m_s[1]), int(m_s[2])] )
+        s = torch.Tensor( [int(m_s[3]), int(m_s[4]), int(m_s[5])] )
 
 def get_class(idx):
     for key in num_classes:
@@ -88,7 +88,7 @@ def preprocessing():
     # Algorithms to calculate mean and standard_deviation
     print("Loading dataset...")
     dataset = LocalDataset(IMAGES_PATH, TRAINING_PATH, transform=transforms.ToTensor())
-    print("Calculate mean & dev std...")
+    print("Calculating mean & dev std...")
     
     m = torch.zeros(3) # Mean
     s = torch.zeros(3) # Standard Deviation
@@ -99,10 +99,10 @@ def preprocessing():
     s=torch.sqrt(s/(len(dataset)*256*144))
 
     print("Calculated mean and standard deviation!")
-    print(m)
-    print(s)
+    str_m = str(int(m[0]))+","+str(int(m[1]))+","+str(int(m[2]))
+    str_s = str(int(s[0]))+","+str(int(s[1]))+","+str(int(s[2]))
     file = open("mean_devstd.txt", "w+")
-    file.write(str(m)+","+str(s))
+    file.write(str(str_m)+","+str(str_s))
     file.close()
 #preprocessing()
 
