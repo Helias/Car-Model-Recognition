@@ -1,4 +1,4 @@
-from dataset import torch, os, LocalDataset, transforms, np, get_class, num_classes, preprocessing, Image
+from dataset import torch, os, LocalDataset, transforms, np, get_class, num_classes, preprocessing, Image, m, s
 from config import *
 
 from torch import nn
@@ -36,24 +36,6 @@ if not os.path.exists(RESULTS_PATH):
     os.makedirs(RESULTS_PATH)
 
 # Load dataset
-
-# Algorithms to calculate mean and standard_deviation
-dataset = LocalDataset(IMAGES_PATH, TRAINING_PATH, transform=transforms.ToTensor())
-# Mean
-m = torch.zeros(3)
-for sample in dataset:
-   m += sample['image'].sum(1).sum(1)
-m /= len(dataset)*256*144
-
-# Standard Deviation
-s = torch.zeros(3)
-for sample in dataset:
-   s+=((sample['image']-m.view(3,1,1))**2).sum(1).sum(1)
-s=torch.sqrt(s/(len(dataset)*256*144))
-
-print("Calculated mean and standard deviation")
-print(m)
-print(s)
 
 mean=m
 std_dev=s

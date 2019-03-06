@@ -23,6 +23,16 @@ for d in dirs:
     num_classes[d] = i
     i+=1
 
+# read mean and dev. standard pre-computed
+m = 0
+s = 0
+if os.path.isfile('./mean_devstd.txt') :
+    m_s = open("mean_devstd.txt", "r").read()
+    m_s = m_s.replace("\n", "")
+    m_s = m_s.split(",")
+    m = m_s[0]
+    s = m_s[1]
+
 def get_class(idx):
     for key in num_classes:
         if idx == num_classes[key]:
@@ -61,6 +71,27 @@ def preprocessing():
     test_csv_file = open("test_file.csv", "w+")
     test_csv_file.write(test_csv)
     test_csv_file.close()
+
+    # Algorithms to calculate mean and standard_deviation
+    dataset = LocalDataset(IMAGES_PATH, TRAINING_PATH, transform=transforms.ToTensor())
+    # Mean
+    m = torch.zeros(3)
+    for sample in dataset:
+        m += sample['image'].sum(1).sum(1)
+    m /= len(dataset)*256*144
+
+    # Standard Deviation
+    s = torch.zeros(3)
+    for sample in dataset:
+        s+=((sample['image']-m.view(3,1,1))**2).sum(1).sum(1)
+    s=torch.sqrt(s/(len(dataset)*256*144))
+
+    print("Calculated mean and standard deviation")
+    print(m)
+    print(s)
+    file = open("mean_devstd.txt", "w+")
+    file.write(m+","+s)
+    file.close()
 #preprocessing()
 
 
