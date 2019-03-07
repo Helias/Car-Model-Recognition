@@ -120,7 +120,7 @@ class LocalDataset(Dataset):
         f,c = self.images[index]
 
         image_path = path.join(self.base_path + "/" + str(c), f)
-        im = Image.open(image_path)
+        im = Image.open(image_path).convert('RGB')
 
         if self.transform is not None:
             im = self.transform(im)

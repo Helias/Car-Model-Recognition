@@ -167,10 +167,6 @@ def test_model(model_name, model, test_loader = validation_set_loader):
             else:
                 i+=1
 
-    # idx_max_preds = np.argmax(preds)
-    # idx_classes = idx_max_preds % classes["num_classes"]
-    # get_class(idx_classes)
-
     return np.concatenate(preds), np.concatenate(gts)
 
 def write_stats(model_name, y, predictions, gts, predictions2):
@@ -218,14 +214,9 @@ def train_model_iter(model_name, model, weight_decay=0):
         model, loss_acc, y_testing, preds = train_model(model_name=model_name, model=model, weight_decay=weight_decay)
 
         preds_test, gts = test_model(model_name, model=model)
-    
-        # print("##### preds #####")
-        # print(preds_test)
-        # print("##### gts #####")
-        # print(gts)
 
         write_stats(model_name, y_testing, preds, gts, preds_test)
-        plot_logs_classification(model_name, loss_acc)
+        #plot_logs_classification(model_name, loss_acc)
 
     gc.collect()
 
