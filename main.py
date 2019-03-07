@@ -113,9 +113,9 @@ def train_model(model_name, model, lr=LEARNING_RATE, epochs=EPOCHS, momentum=MOM
 
                     if DEBUG and i == 2:
                         break
-            except Exception as e:
+            except Exception as err:
                 print ("\n\n######### ERROR #######")
-                print (str(e))
+                print (str(err))
                 print ("\n\n######### batch #######")
                 print (batch['img_name'])
                 print ("\n\n")
