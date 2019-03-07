@@ -78,8 +78,8 @@ def train_model(model_name, model, lr=LEARNING_RATE, epochs=EPOCHS, momentum=MOM
             epoch_acc = 0
             samples = 0
 
-            for i, batch in enumerate(loaders[mode]):
-                try:
+            try:
+                for i, batch in enumerate(loaders[mode]):
                     # convert tensor to variable
                     x=Variable(batch['image'], requires_grad=(mode=='train'))
                     y=Variable(batch['label'])
@@ -113,12 +113,12 @@ def train_model(model_name, model, lr=LEARNING_RATE, epochs=EPOCHS, momentum=MOM
 
                     if DEBUG and i == 2:
                         break
-                except Exception as err:
-                    print ("\n\n######### ERROR #######")
-                    print (str(err))
-                    print ("\n\n######### batch #######")
-                    print (batch['img_name'])
-                    print ("\n\n")
+            except Exception as err:
+                print ("\n\n######### ERROR #######")
+                print (str(err))
+                print ("\n\n######### batch #######")
+                print (batch['img_name'])
+                print ("\n\n")
 
             epoch_loss /= samples
             epoch_acc /= samples
