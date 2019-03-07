@@ -36,7 +36,6 @@ if not os.path.exists(RESULTS_PATH):
     os.makedirs(RESULTS_PATH)
 
 # Load dataset
-
 mean=m
 std_dev=s
 transform = transforms.Compose([transforms.Resize((224,224)),
@@ -79,7 +78,7 @@ def train_model(model_name, model, lr=LEARNING_RATE, epochs=EPOCHS, momentum=MOM
             epoch_acc = 0
             samples = 0
             for i, batch in enumerate(loaders[mode]):
-                
+
                 # convert tensor to variable
                 x=Variable(batch['image'], requires_grad=(mode=='train'))
                 y=Variable(batch['label'])

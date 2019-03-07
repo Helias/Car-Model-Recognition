@@ -32,9 +32,12 @@ if os.path.isfile('./mean_devstd.txt'):
     m_s = open("mean_devstd.txt", "r").read()
     if "," in m_s:
         m_s = m_s.replace("\n", "")
+        m_s = m_s.replace("tensor", "")
+        m_s = m_s.replace("(", "")
+        m_s = m_s.replace(")", "")
         m_s = m_s.split(",")
-        m = torch.Tensor( [int(m_s[0]), int(m_s[1]), int(m_s[2])] )
-        s = torch.Tensor( [int(m_s[3]), int(m_s[4]), int(m_s[5])] )
+        m = torch.Tensor( [float(m_s[0]), float(m_s[1]), float(m_s[2])] )
+        s = torch.Tensor( [float(m_s[3]), float(m_s[4]), float(m_s[5])] )
 
 def get_class(idx):
     for key in num_classes:
@@ -94,18 +97,17 @@ def preprocessing():
     s = torch.zeros(3) # Standard Deviation
     for sample in dataset:
         m += sample['image'].sum(1).sum(1)
-        s+=((sample['image']-m.view(3,1,1))**2).sum(1).sum(1)
+        s += ((sample['image']-m.view(3,1,1))**2).sum(1).sum(1)
     m /= len(dataset)*256*144    
-    s=torch.sqrt(s/(len(dataset)*256*144))
+    s = torch.sqrt(s/(len(dataset)*256*144))
 
     print("Calculated mean and standard deviation!")
-    str_m = str(int(m[0]))+","+str(int(m[1]))+","+str(int(m[2]))
-    str_s = str(int(s[0]))+","+str(int(s[1]))+","+str(int(s[2]))
+    str_m = str(m[0])+","+str(m[1])+","+str(m[2])
+    str_s = str(s[0])+","+str(s[1])+","+str(s[2])
     file = open("mean_devstd.txt", "w+")
     file.write(str(str_m)+","+str(str_s))
     file.close()
 #preprocessing()
-
 
 class LocalDataset(Dataset):
 
