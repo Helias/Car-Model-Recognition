@@ -77,42 +77,48 @@ def train_model(model_name, model, lr=LEARNING_RATE, epochs=EPOCHS, momentum=MOM
             epoch_loss = 0
             epoch_acc = 0
             samples = 0
-            for i, batch in enumerate(loaders[mode]):
 
-                # convert tensor to variable
-                x=Variable(batch['image'], requires_grad=(mode=='train'))
-                y=Variable(batch['label'])
-                
-                if USE_CUDA and cuda_available:
-                    x = x.cuda()
-                    y = y.cuda()
+            try:
+                for i, batch in enumerate(loaders[mode]):
+                    # convert tensor to variable
+                    x=Variable(batch['image'], requires_grad=(mode=='train'))
+                    y=Variable(batch['label'])
 
-                output = model(x)
-                l = criterion(output, y) # loss
-                
-                if mode=='train':
-                    l.backward()
-                    optimizer.step()
-                    optimizer.zero_grad()
-                else:
-                    y_testing.extend(y.data.tolist())
-                    preds.extend(output.max(1)[1].tolist())
-                
-                if USE_CUDA and cuda_available:
-                    acc = accuracy_score(y.data.cuda().cpu().numpy(), output.max(1)[1].cuda().cpu().numpy())
-                else:
-                    acc = accuracy_score(y.data, output.max(1)[1])
+                    if USE_CUDA and cuda_available:
+                        x = x.cuda()
+                        y = y.cuda()
 
-                epoch_loss += l.data.item()*x.shape[0] # l.data[0]
-                epoch_acc += acc*x.shape[0]
-                samples += x.shape[0]
+                    output = model(x)
+                    l = criterion(output, y) # loss
+                    
+                    if mode=='train':
+                        l.backward()
+                        optimizer.step()
+                        optimizer.zero_grad()
+                    else:
+                        y_testing.extend(y.data.tolist())
+                        preds.extend(output.max(1)[1].tolist())
+                    
+                    if USE_CUDA and cuda_available:
+                        acc = accuracy_score(y.data.cuda().cpu().numpy(), output.max(1)[1].cuda().cpu().numpy())
+                    else:
+                        acc = accuracy_score(y.data, output.max(1)[1])
 
-                print ("\r[%s] Epoch %d/%d. Iteration %d/%d. Loss: %0.2f. Accuracy: %0.2f" % \
-                    (mode, e+1, epochs, i, len(loaders[mode]), epoch_loss/samples, epoch_acc/samples))
+                    epoch_loss += l.data.item()*x.shape[0] # l.data[0]
+                    epoch_acc += acc*x.shape[0]
+                    samples += x.shape[0]
 
-                if DEBUG and i == 2:
-                    break
+                    print ("\r[%s] Epoch %d/%d. Iteration %d/%d. Loss: %0.2f. Accuracy: %0.2f" % \
+                        (mode, e+1, epochs, i, len(loaders[mode]), epoch_loss/samples, epoch_acc/samples))
 
+                    if DEBUG and i == 2:
+                        break
+            except Exception as e:
+                print ("\n\n######### ERROR #######")
+                print (str(e))
+                print ("\n\n######### batch #######")
+                print (batch['img_name'])
+                print ("\n\n")
 
             epoch_loss /= samples
             epoch_acc /= samples
