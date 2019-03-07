@@ -41,7 +41,8 @@ mean=m
 std_dev=s
 transform = transforms.Compose([transforms.CenterCrop(224),
                                     transforms.ToTensor(),
-                                    transforms.Normalize(mean, std_dev)])
+                                    transforms.Normalize(mean, std_dev),
+                                    transforms.CenterCrop(224)])
 
 training_set = LocalDataset(IMAGES_PATH, TRAINING_PATH, transform=transform)
 validation_set = LocalDataset(IMAGES_PATH, VALIDATION_PATH, transform=transform)
@@ -78,42 +79,45 @@ def train_model(model_name, model, lr=LEARNING_RATE, epochs=EPOCHS, momentum=MOM
             epoch_loss = 0
             epoch_acc = 0
             samples = 0
+            try:
+                for i, batch in enumerate(loaders[mode]):
+                    
+                    # convert tensor to variable
+                    x=Variable(batch['image'], requires_grad=(mode=='train'))
+                    y=Variable(batch['label'])
+                    
+                    if USE_CUDA and cuda_available:
+                        x = x.cuda()
+                        y = y.cuda()
 
-            for i, batch in enumerate(loaders[mode]):
-                
-                # convert tensor to variable
-                x=Variable(batch['image'], requires_grad=(mode=='train'))
-                y=Variable(batch['label'])
-                
-                if USE_CUDA and cuda_available:
-                    x = x.cuda()
-                    y = y.cuda()
+                    output = model(x)
+                    l = criterion(output, y) # loss
+                    
+                    if mode=='train':
+                        l.backward()
+                        optimizer.step()
+                        optimizer.zero_grad()
+                    else:
+                        y_testing.extend(y.data.tolist())
+                        preds.extend(output.max(1)[1].tolist())
+                    
+                    if USE_CUDA and cuda_available:
+                        acc = accuracy_score(y.data.cuda().cpu().numpy(), output.max(1)[1].cuda().cpu().numpy())
+                    else:
+                        acc = accuracy_score(y.data, output.max(1)[1])
 
-                output = model(x)
-                l = criterion(output, y) # loss
-                
-                if mode=='train':
-                    l.backward()
-                    optimizer.step()
-                    optimizer.zero_grad()
-                else:
-                    y_testing.extend(y.data.tolist())
-                    preds.extend(output.max(1)[1].tolist())
-                
-                if USE_CUDA and cuda_available:
-                    acc = accuracy_score(y.data.cuda().cpu().numpy(), output.max(1)[1].cuda().cpu().numpy())
-                else:
-                    acc = accuracy_score(y.data, output.max(1)[1])
+                    epoch_loss += l.data.item()*x.shape[0] # l.data[0]
+                    epoch_acc += acc*x.shape[0]
+                    samples += x.shape[0]
 
-                epoch_loss += l.data.item()*x.shape[0] # l.data[0]
-                epoch_acc += acc*x.shape[0]
-                samples += x.shape[0]
+                    print ("\r[%s] Epoch %d/%d. Iteration %d/%d. Loss: %0.2f. Accuracy: %0.2f" % \
+                        (mode, e+1, epochs, i, len(loaders[mode]), epoch_loss/samples, epoch_acc/samples))
 
-                print ("\r[%s] Epoch %d/%d. Iteration %d/%d. Loss: %0.2f. Accuracy: %0.2f" % \
-                    (mode, e+1, epochs, i, len(loaders[mode]), epoch_loss/samples, epoch_acc/samples))
+                    if DEBUG and i == 2:
+                        break
+            except Exception as e:
+                print("Error: "+str(e))
 
-                if DEBUG and i == 2:
-                  break
 
             epoch_loss /= samples
             epoch_acc /= samples
