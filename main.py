@@ -5,7 +5,7 @@ from torch import nn
 from torch.optim import SGD
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
-from torchvision.models import resnet, vgg
+from torchvision.models import resnet, vgg, densenet #, inception
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
@@ -88,9 +88,15 @@ def train_model(model_name, model, lr=LEARNING_RATE, epochs=EPOCHS, momentum=MOM
                         x = x.cuda()
                         y = y.cuda()
 
+                    # if "inception" in model_name and mode=='train':
+                    #     output, aux_output = model(x)
+                    #     loss1 = criterion(output, y)
+                    #     loss2 = criterion(aux_output, y)
+                    #     l = loss1 + 0.4*loss2
+                    # else:
                     output = model(x)
                     l = criterion(output, y) # loss
-                    
+
                     if mode=='train':
                         l.backward()
                         optimizer.step()
@@ -222,11 +228,20 @@ def train_model_iter(model_name, model, weight_decay=0):
 
 classes = {"num_classes": len(num_classes)}
 
-# resnet50_model = resnet.resnet50(pretrained=False, **classes)
+resnet50_model = resnet.resnet50(pretrained=False, **classes)
 # train_model_iter("resnet50", resnet50_model)
 
 vgg19_model = vgg.vgg19(pretrained=False, **classes)
-train_model_iter("vgg19", vgg19_model)
+# train_model_iter("vgg19", vgg19_model)
+
+# inception_model = inception.inception_v3(pretrained=False, **classes)
+# train_model_iter("inception", inception_model)
+
+densenet_model = densenet.densenet161(pretrained=False, **classes)
+train_model_iter("densenet", densenet_model)
+
+model_name="densenet"
+model=resnet50_model
 
 if args.inp:
     print ("input: ", args.inp)
@@ -239,8 +254,6 @@ if args.inp:
     batch['image'] = im
     batch["img_name"] = image_path
 
-    model_name="resnet50"
-    model=resnet50_model
     model.load_state_dict(torch.load(str(RESULTS_PATH) + "/" + str(model_name) + "/" + str(model_name) + ".pt"))
     if USE_CUDA and cuda_available:
         model = model.cuda()
