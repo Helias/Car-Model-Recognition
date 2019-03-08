@@ -5,7 +5,7 @@ from torch import nn
 from torch.optim import SGD
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
-from torchvision.models import resnet
+from torchvision.models import resnet, vgg
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
@@ -221,15 +221,19 @@ def train_model_iter(model_name, model, weight_decay=0):
     gc.collect()
 
 classes = {"num_classes": len(num_classes)}
-resnet50_model = resnet.resnet50(pretrained=False, **classes)
 
-train_model_iter("resnet50", resnet50_model)
+# resnet50_model = resnet.resnet50(pretrained=False, **classes)
+# train_model_iter("resnet50", resnet50_model)
+
+vgg19_model = vgg.vgg19(pretrained=False, **classes)
+train_model_iter("vgg19", vgg19_model)
+
 
 if args.inp:
     print ("input: ", args.inp)
 
     image_path = args.inp
-    im = Image.open(image_path)
+    im = Image.open(image_path).convert("RGB")
     im = transform(im)
 
     batch = {}
