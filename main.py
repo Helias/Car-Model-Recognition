@@ -216,7 +216,7 @@ def train_model_iter(model_name, model, weight_decay=0):
         preds_test, gts = test_model(model_name, model=model)
 
         write_stats(model_name, y_testing, preds, gts, preds_test)
-        #plot_logs_classification(model_name, loss_acc)
+        plot_logs_classification(model_name, loss_acc)
 
     gc.collect()
 
@@ -227,7 +227,6 @@ classes = {"num_classes": len(num_classes)}
 
 vgg19_model = vgg.vgg19(pretrained=False, **classes)
 train_model_iter("vgg19", vgg19_model)
-
 
 if args.inp:
     print ("input: ", args.inp)
