@@ -227,10 +227,13 @@ resnet50_model = resnet.resnet50(pretrained=False, **classes)
 # train_model_iter("resnet50", resnet50_model)
 
 vgg19_model = vgg.vgg19(pretrained=False, **classes)
-train_model_iter("vgg19", vgg19_model)
+#train_model_iter("vgg19", vgg19_model)
 
-model_name="vgg19"
-model=vgg19_model
+resnet152_model = resnet.resnet152(pretrained=False, **classes)
+train_model_iter("resnet152", resnet152_model)
+
+model_name="resnet152"
+model=resnet152_model
 
 if args.inp:
     print ("input: ", args.inp)
@@ -255,6 +258,7 @@ if args.inp:
         preds.append(pred)
         gts.append(gt)
 
+    preds = np.concatenate(preds)
     idx_max_pred = np.argmax(preds)
     idx_classes = idx_max_pred % classes["num_classes"]
     print(get_class(idx_classes))
