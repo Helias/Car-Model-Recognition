@@ -9,6 +9,7 @@ from torchvision import transforms
 from PIL import Image
 from os import path
 from glob import glob
+import random
 
 from config import *
 
@@ -47,6 +48,8 @@ def get_class(idx):
 def preprocessing():
     train_csv = ""
     test_csv  = ""
+    train_csv_supp = []
+    test_csv_supp = []
     class_files_training = []
     class_files_testing  = []
 
@@ -69,7 +72,7 @@ def preprocessing():
                 tmp_f = tmp_f.replace(" ", "_")
                 os.rename(IMAGES_PATH+"/"+key+"/"+f, IMAGES_PATH+"/"+key+"/"+tmp_f)
                 f = tmp_f
-            train_csv += f + ","+str(key)+"\n"
+            train_csv_supp.append(f + ","+str(key))
 
         for f in class_files_testing:
             if "," in f or "#" in f or " " in f:
@@ -78,7 +81,16 @@ def preprocessing():
                 tmp_f = tmp_f.replace(" ", "_")
                 os.rename(IMAGES_PATH+"/"+key+"/"+f, IMAGES_PATH+"/"+key+"/"+tmp_f)
                 f = tmp_f
-            test_csv += f + ","+str(key)+"\n"
+            test_csv_supp.append(f + ","+str(key))
+
+    random.shuffle(train_csv_supp)
+    random.shuffle(test_csv_supp)
+
+    for t in train_csv_supp:
+        train_csv += t + "\n"
+    
+    for t in test_csv_supp:
+        test_csv += t + "\n"
 
     train_csv_file = open("train_file.csv", "w+")
     train_csv_file.write(train_csv)
