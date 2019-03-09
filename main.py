@@ -232,16 +232,10 @@ resnet50_model = resnet.resnet50(pretrained=False, **classes)
 # train_model_iter("resnet50", resnet50_model)
 
 vgg19_model = vgg.vgg19(pretrained=False, **classes)
-# train_model_iter("vgg19", vgg19_model)
+train_model_iter("vgg19", vgg19_model)
 
-# inception_model = inception.inception_v3(pretrained=False, **classes)
-# train_model_iter("inception", inception_model)
-
-densenet_model = densenet.densenet161(pretrained=False, **classes)
-train_model_iter("densenet", densenet_model)
-
-model_name="densenet"
-model=resnet50_model
+model_name="vgg19"
+model=vgg19_model
 
 if args.inp:
     print ("input: ", args.inp)
