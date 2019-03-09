@@ -5,7 +5,7 @@ from torch import nn
 from torch.optim import SGD
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
-from torchvision.models import resnet, vgg, densenet #, inception
+from torchvision.models import resnet, vgg
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
@@ -80,6 +80,7 @@ def train_model(model_name, model, lr=LEARNING_RATE, epochs=EPOCHS, momentum=MOM
 
             try:
                 for i, batch in enumerate(loaders[mode]):
+                    print (batch['image'].shape)
                     # convert tensor to variable
                     x=Variable(batch['image'], requires_grad=(mode=='train'))
                     y=Variable(batch['label'])
@@ -88,12 +89,6 @@ def train_model(model_name, model, lr=LEARNING_RATE, epochs=EPOCHS, momentum=MOM
                         x = x.cuda()
                         y = y.cuda()
 
-                    # if "inception" in model_name and mode=='train':
-                    #     output, aux_output = model(x)
-                    #     loss1 = criterion(output, y)
-                    #     loss2 = criterion(aux_output, y)
-                    #     l = loss1 + 0.4*loss2
-                    # else:
                     output = model(x)
                     l = criterion(output, y) # loss
 
@@ -239,28 +234,27 @@ model=vgg19_model
 
 if args.inp:
     print ("input: ", args.inp)
-
-    image_path = args.inp
-    im = Image.open(image_path).convert("RGB")
-    im = transform(im)
-
-    batch = {}
-    batch['image'] = im
-    batch["img_name"] = image_path
-
+    test_im = LocalDataset(IMAGES_PATH, TRAINING_PATH, transform=transform)
+    test_loader = DataLoader(dataset=test_im, batch_size=BATCH_SIZE, num_workers=THREADS)
     model.load_state_dict(torch.load(str(RESULTS_PATH) + "/" + str(model_name) + "/" + str(model_name) + ".pt"))
-    if USE_CUDA and cuda_available:
-        model = model.cuda()
-    model.eval()
 
-    x = Variable(batch['image'])
-    if USE_CUDA and cuda_available:
-        x = x.cuda()
-        pred = model(x).data.cuda().cpu().numpy().copy()
-    else:
-        pred = model(x).data.numpy().copy()
-    gt = batch['label'].numpy().copy()
+    gts = []
+    preds = []
+    for batch in test_loader:
+        if USE_CUDA and cuda_available:
+            model = model.cuda()
+        model.eval()
 
-    idx_max_pred = np.argmax(pred)
+        x = Variable(batch['image'])
+        if USE_CUDA and cuda_available:
+            x = x.cuda()
+            pred = model(x).data.cuda().cpu().numpy().copy()
+        else:
+            pred = model(x).data.numpy().copy()
+        gt = batch['label'].numpy().copy()
+        preds.append(pred)
+        gts.append(gt)
+
+    idx_max_pred = np.argmax(preds)
     idx_classes = idx_max_pred % classes["num_classes"]
     print(get_class(idx_classes))
