@@ -80,7 +80,6 @@ def train_model(model_name, model, lr=LEARNING_RATE, epochs=EPOCHS, momentum=MOM
 
             try:
                 for i, batch in enumerate(loaders[mode]):
-                    print (batch['image'].shape)
                     # convert tensor to variable
                     x=Variable(batch['image'], requires_grad=(mode=='train'))
                     y=Variable(batch['label'])
