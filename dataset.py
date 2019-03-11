@@ -123,13 +123,9 @@ def preprocessing():
 
 class LocalDataset(Dataset):
 
-    def __init__(self, base_path, txt_list, transform=None, new_sample=None):
-        if new_sample is None:
-            self.base_path=base_path
-            self.images = np.loadtxt(txt_list,delimiter=',',dtype='str') # use np.genfrom() instead of np.loadtxt() to skip errors
-        else:
-            self.base_path=""
-            self.images = [[new_sample,""]]
+    def __init__(self, base_path, txt_list, transform=None):
+        self.base_path=base_path
+        self.images = np.loadtxt(txt_list,delimiter=',',dtype='str') # use np.genfrom() instead of np.loadtxt() to skip errors
 
         self.transform = transform
 

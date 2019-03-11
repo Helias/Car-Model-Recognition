@@ -229,35 +229,32 @@ vgg19_model = vgg.vgg19(pretrained=False, **classes)
 #train_model_iter("vgg19", vgg19_model)
 
 resnet152_model = resnet.resnet152(pretrained=False, **classes)
-train_model_iter("resnet152", resnet152_model)
+#train_model_iter("resnet152", resnet152_model)
 
-model_name="resnet152"
-model=resnet152_model
+model_name="resnet50"
+model=resnet50_model
 
 if args.inp:
     print ("input: ", args.inp)
-    test_im = LocalDataset(IMAGES_PATH, TRAINING_PATH, transform=transform)
-    test_loader = DataLoader(dataset=test_im, batch_size=BATCH_SIZE, num_workers=THREADS)
+
+    image_path = args.inp
+    im = Image.open(image_path).convert("RGB")
+    im = transform(im)
+
     model.load_state_dict(torch.load(str(RESULTS_PATH) + "/" + str(model_name) + "/" + str(model_name) + ".pt"))
 
-    gts = []
-    preds = []
-    for batch in test_loader:
-        if USE_CUDA and cuda_available:
-            model = model.cuda()
-        model.eval()
+    if USE_CUDA and cuda_available:
+        model = model.cuda()
+    model.eval()
 
-        x = Variable(batch['image'])
-        if USE_CUDA and cuda_available:
-            x = x.cuda()
-            pred = model(x).data.cuda().cpu().numpy().copy()
-        else:
-            pred = model(x).data.numpy().copy()
-        gt = batch['label'].numpy().copy()
-        preds.append(pred)
-        gts.append(gt)
+    x = Variable(im.unsqueeze(0))
 
-    preds = np.concatenate(preds)
-    idx_max_pred = np.argmax(preds)
+    if USE_CUDA and cuda_available:
+        x = x.cuda()
+        pred = model(x).data.cuda().cpu().numpy().copy()
+    else:
+        pred = model(x).data.numpy().copy()
+
+    idx_max_pred = np.argmax(pred)
     idx_classes = idx_max_pred % classes["num_classes"]
     print(get_class(idx_classes))
