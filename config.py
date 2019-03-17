@@ -19,5 +19,3 @@ TEST_PATH = "test_file.csv"
 
 RESULTS_PATH="results"
 
-# regularization
-WEIGHT_DECAY=0.005

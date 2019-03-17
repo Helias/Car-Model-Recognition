@@ -41,6 +41,7 @@ if os.path.isfile('./mean_devstd.txt'):
         s = torch.Tensor( [float(m_s[3]), float(m_s[4]), float(m_s[5])] )
 
 def get_class(idx):
+    #print (num_classes)
     for key in num_classes:
         if idx == num_classes[key]:
             return key

@@ -5,7 +5,7 @@ from torch import nn
 from torch.optim import SGD
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
-from torchvision.models import resnet, vgg
+from torchvision.models import resnet
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
@@ -38,6 +38,7 @@ if not os.path.exists(RESULTS_PATH):
 # Load dataset
 mean=m
 std_dev=s
+
 transform = transforms.Compose([transforms.Resize((224,224)),
                                     transforms.ToTensor(),
                                     transforms.Normalize(mean, std_dev)])
@@ -143,7 +144,7 @@ def test_model(model_name, model, test_loader = validation_set_loader):
 
     preds = []
     gts = []
-    
+
     #debug
     i = 0
     
@@ -222,17 +223,11 @@ def train_model_iter(model_name, model, weight_decay=0):
 
 classes = {"num_classes": len(num_classes)}
 
-resnet50_model = resnet.resnet50(pretrained=False, **classes)
-# train_model_iter("resnet50", resnet50_model)
-
-vgg19_model = vgg.vgg19(pretrained=False, **classes)
-#train_model_iter("vgg19", vgg19_model)
-
 resnet152_model = resnet.resnet152(pretrained=False, **classes)
-#train_model_iter("resnet152", resnet152_model)
+train_model_iter("resnet152", resnet152_model)
 
-model_name="resnet50"
-model=resnet50_model
+model_name="resnet152"
+model=resnet152_model
 
 if args.inp:
     print ("input: ", args.inp)
@@ -240,6 +235,8 @@ if args.inp:
     image_path = args.inp
     im = Image.open(image_path).convert("RGB")
     im = transform(im)
+
+    print (str(RESULTS_PATH) + "/" + str(model_name) + "/" + str(model_name) + ".pt")
 
     model.load_state_dict(torch.load(str(RESULTS_PATH) + "/" + str(model_name) + "/" + str(model_name) + ".pt"))
 
@@ -254,6 +251,8 @@ if args.inp:
         pred = model(x).data.cuda().cpu().numpy().copy()
     else:
         pred = model(x).data.numpy().copy()
+
+    print (pred)
 
     idx_max_pred = np.argmax(pred)
     idx_classes = idx_max_pred % classes["num_classes"]
