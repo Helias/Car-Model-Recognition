@@ -223,7 +223,7 @@ def train_model_iter(model_name, model, weight_decay=0):
 
 classes = {"num_classes": len(num_classes)}
 
-resnet152_model = resnet.resnet152(pretrained=False, **classes)
+resnet152_model = resnet.resnet152(pretrained=True, **classes)
 train_model_iter("resnet152", resnet152_model)
 
 model_name="resnet152"
