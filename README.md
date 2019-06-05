@@ -28,6 +28,52 @@ I suggest to use [VMMRdb](http://vmmrdb.cecsresearch.org/) as dataset, it's free
 
 So download the dataset, select some models and put the directory model in the dataset folder, any directory in "dataset" will be considered a new class.
 
+### Handle CSV training, testing, validation and dataset structure
+
+The dataset structure should be like this:
+```
+dataset / classes / file.jpg
+```
+
+For example, we have 3 classes: **honda_civic, nissan and ford**:
+```
+dataset_dir / honda_civic / file1.jpg
+dataset_dir / honda_civic / file2.jpg
+....
+dataset_dir / nissan / file1.jpg
+dataset_dir / nissan / file2.jpg
+....
+dataset_dir / ford / file1.jpg
+dataset_dir / ford / file2.jpg
+...
+and so on.
+```
+
+The **"dataset_dir"** is the **IMAGES_PATH** in config.py.
+The python script will save the classes in a  dict() named **num_classes**, like this:
+```
+num_classes = {
+  "honda_civic": 1,
+  "nissan": 2,
+  "ford": 3
+}
+```
+
+This conversion happens automatically when you just add a directory inside the IMAGES_PATH, if you add tomorrow a new car, like, FIAT, the program will add automatically that to the classes, just **pay attention to the order of the classes inside num_classes and generate the related trainin,testing and validation CSV files**.
+
+The file **training, testing and validation (CSV)** should contain only two columns:
+**FILE_NAME, NUM_CLASS**
+
+Example of CSV file:
+```
+file1.jpg, 1
+file2.jpg, 1
+file1.jpg, 2
+file2.jpg, 2
+file1.jpg, 3
+file2.jpg, 3
+```
+
 ### Preprocess the dataset
 You have to calculate the mean and standard deviation to apply a normalization, just use the -p parameter to process your dataset so type:
 
