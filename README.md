@@ -59,7 +59,7 @@ num_classes = {
 }
 ```
 
-This conversion happens automatically when you just add a directory inside the IMAGES_PATH, if you add tomorrow a new car, like, FIAT, the program will add automatically that to the classes, just **pay attention to the order of the classes inside num_classes and generate the related trainin,testing and validation CSV files**.
+This conversion happens automatically when you just add a directory inside the IMAGES_PATH, if you add tomorrow a new car, like, FIAT, the program will add automatically to the classes, just **pay attention to the order of the classes inside num_classes and the related trainin,testing and validation CSV files**.
 
 The file **training, testing and validation (CSV)** should contain only two columns:
 **FILE_NAME, NUM_CLASS**
@@ -74,8 +74,11 @@ file1.jpg, 3
 file2.jpg, 3
 ```
 
+Anyway, this paragraph is only for your info, the CSV files are automatically genrated by the preprocessing phase explained in the follow paragraph.
+
+
 ### Preprocess the dataset
-You have to calculate the mean and standard deviation to apply a normalization, just use the -p parameter to process your dataset so type:
+You have to generate the CSV files and calculate the mean and standard deviation to apply a normalization, just use the -p parameter to process your dataset so type:
 
 ```
 $ python3 main.py -p
