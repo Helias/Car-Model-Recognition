@@ -64,7 +64,7 @@ def preprocessing():
         class_files.sort()
 
         class_files_training = class_files[: int(len(class_files)*.66)] # get 66% class images fo training
-        class_files_testing = class_files[int(len(class_files)*.66)+1 :] # get 33% class images fo training
+        class_files_testing = class_files[int(len(class_files)*.66)+1 :] # get 33% class images fo testing
 
         for f in class_files_training:
             if "," in f or "#" in f or " " in f:
