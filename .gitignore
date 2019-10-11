@@ -4,3 +4,4 @@ mean_devstd.txt
 train_file.csv
 test_file.csv
 results
+__pycache__/

@@ -11,6 +11,15 @@ This project consists in a classifier of car model.
 - scikit-learn
 - matplotlib
 - pillow
+- torch (pytorch)
+- torchvision
+
+You can install the requirements using:
+```
+pip3 install -r requirements.txt
+```
+
+**Troubleshooting**: if you get some errors about pytorch or torchvision install use `sudo` to install it.
 
 ## Usage
 
@@ -109,6 +118,43 @@ I used this project predicting 3 models:
 - Ford Explorer
 
 I selected all 2000-2007 images from VMMRdb, so I downloaded the full dataset and choose the 2000-2007 images and put them into one directory per class (so I had 3 directory named "Ford Explorer", "Nissan Altima", "Honda Civic" in dataset folder).
+
+## Troubleshooting
+
+### Size mismatch
+
+Error:
+```python
+RuntimeError: Error(s) in loading state_dict for ResNet:
+size mismatch for fc.weight: copying a param with shape torch.Size([1000, 2048]) from checkpoint, the shape in current model is torch.Size([3, 2048]).
+size mismatch for fc.bias: copying a param with shape torch.Size([1000]) from checkpoint, the shape in current model is torch.Size([3]).
+```
+
+**Solution**: probably you need to re-train your neural network model because you are using a wrong model for your data and classes, so don't use some **pretrained** model but train a new neural network with your data/classes.
+
+### CUDA out of memory
+
+Error:
+```python
+######### ERROR #######
+CUDA out of memory. Tried to allocate 20.00 MiB (GPU 0; 1.96 GiB total capacity; 967.98 MiB already allocated; 25.94 MiB free; 48.02 MiB cached)
+
+
+######### batch #######
+[images.png, files_path.png, ....]
+
+Traceback (most recent call last):
+  File "main.py", line 227, in <module>
+    train_model_iter("resnet152", resnet152_model)
+  File "main.py", line 215, in train_model_iter
+    model, loss_acc, y_testing, preds = train_model(model_name=model_name, model=model, weight_decay=weight_decay)
+  File "main.py", line 124, in train_model
+    epoch_loss /= samples
+ZeroDivisionError: division by zero
+```
+
+**Solution**: you're using CUDA, probably the memory of your GPU is too low for the batch size that you're giving in input, try to reduce the `BATCH_SIZE` from **config.py** or use your RAM instead of GPU memory if you have more, so put `USE_CUDA=false` in **config.py**.
+
 
 ## Credits
 - [Helias](https://github.com/Helias)

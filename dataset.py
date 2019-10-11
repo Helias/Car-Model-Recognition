@@ -26,6 +26,10 @@ for d in dirs:
     num_classes[d] = i
     i+=1
 
+print ("Classes: ")
+print (num_classes)
+print ("")
+
 # read mean and dev. standard pre-computed
 m = 0
 s = 0
