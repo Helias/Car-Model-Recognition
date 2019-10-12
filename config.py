@@ -3,7 +3,7 @@
 DEBUG = False
 
 # training
-EPOCHS = 1
+EPOCHS = 10
 MOMENTUM = 0.9
 LEARNING_RATE = 0.01
 BATCH_SIZE = 16
