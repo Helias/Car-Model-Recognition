@@ -37,6 +37,10 @@ I suggest to use [VMMRdb](http://vmmrdb.cecsresearch.org/) as dataset, it's free
 
 So download the dataset, select some models and put the directory model in the dataset folder, any directory in "dataset" will be considered a new class.
 
+If you need more data for your project you can also add the followings dataset:
+- [Stanford Cars Dataset from jkrause](https://ai.stanford.edu/~jkrause/cars/car_dataset.html) (low images quantity)
+- [Comprehensive Cars Database](http://mmlab.ie.cuhk.edu.hk/datasets/comp_cars/), here the module to get this dataset [MODULE](http://mmlab.ie.cuhk.edu.hk/datasets/comp_cars/agreement.pdf)
+
 ### Handle CSV training, testing, validation and dataset structure
 
 The dataset structure should be like this:
