@@ -95,6 +95,18 @@ $ python3 main.py -p
 
 ### Train the model
 
+**Little introduction**
+
+Before the training process, modify the `EPOCHS` parameter in `config.py`, usually with 3 classes 30-50 epochs should be enough, but you have to see the results_graph.pn file (when you finish your training with the default epochs parameter) and check if the blue curve is stable.
+
+An example of the graph could be the follow:
+![graph results - Car Model Recognition](https://user-images.githubusercontent.com/519778/67412403-81fe5c00-f5bf-11e9-9bd1-e86251bb9a0c.png)
+
+After 45-50 epochs (number bottom of the graph), the blue curve is stable and does not have peaks down.
+Moreover, the testing curve (the orange one) is pretty "stable", even with some peaks, for the testing is normal that the peaks are frequently.
+
+**Train the model**
+
 To train a new model resnet152 model you can run the main.py with the -t parameter, so type:
 
 ```
@@ -154,6 +166,13 @@ ZeroDivisionError: division by zero
 ```
 
 **Solution**: you're using CUDA, probably the memory of your GPU is too low for the batch size that you're giving in input, try to reduce the `BATCH_SIZE` from **config.py** or use your RAM instead of GPU memory if you have more, so put `USE_CUDA=false` in **config.py**.
+
+### "My model does not recognize exactly the class"
+Probably you have to increase the DATA PER CLASS in your dataset, a good number of images per class could be 10k (10 000 items), but with only 3 classes you can even use 2k-5k items per class.
+Another parameter that affect hugely the training is the EPOCHS, try to at least 50 epochs if you are not satisfied about the results.
+
+
+**You are not the only one to get this troubles, check the issue [#3](https://github.com/Helias/Car-Model-Recognition/issues/3) to get a full conversation of this solutions/troubleshooting.**
 
 
 ## Credits
