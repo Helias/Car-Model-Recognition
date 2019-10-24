@@ -133,7 +133,7 @@ I selected all 2000-2007 images from VMMRdb, so I downloaded the full dataset an
 
 ## Troubleshooting
 
-### Size mismatch
+### - Size mismatch
 
 Error:
 ```python
@@ -144,7 +144,7 @@ size mismatch for fc.bias: copying a param with shape torch.Size([1000]) from ch
 
 **Solution**: probably you need to re-train your neural network model because you are using a wrong model for your data and classes, so don't use some **pretrained** model but train a new neural network with your data/classes.
 
-### CUDA out of memory
+### - CUDA out of memory
 
 Error:
 ```python
@@ -167,9 +167,9 @@ ZeroDivisionError: division by zero
 
 **Solution**: you're using CUDA, probably the memory of your GPU is too low for the batch size that you're giving in input, try to reduce the `BATCH_SIZE` from **config.py** or use your RAM instead of GPU memory if you have more, so put `USE_CUDA=false` in **config.py**.
 
-### "My model does not recognize exactly the class"
-Probably you have to increase the DATA PER CLASS in your dataset, a good number of images per class could be 10k (10 000 items), but with only 3 classes you can even use 2k-5k items per class.
-Another parameter that affect hugely the training is the EPOCHS, try to at least 50 epochs if you are not satisfied about the results.
+### - "My model does not recognize exactly the class"
+Probably you have to increase the **DATA PER CLASS** in your dataset, a good number of images per class could be 10k (10 000 items), but with only 3 classes you can even use 2k-5k items per class.
+Another parameter that affect hugely the training is the **EPOCHS**, try to at least 50 epochs if you are not satisfied about the results.
 
 
 **You are not the only one to get this troubles, check the issue [#3](https://github.com/Helias/Car-Model-Recognition/issues/3) to get a full conversation of this solutions/troubleshooting.**
