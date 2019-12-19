@@ -5,3 +5,4 @@ train_file.csv
 test_file.csv
 results
 __pycache__/
+.vscode/
