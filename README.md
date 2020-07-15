@@ -181,7 +181,7 @@ Another parameter that affect hugely the training is the **EPOCHS**, try to at l
 
 ## Credits
 - [Helias](https://github.com/Helias)
-
+- [Riccardo Pesce](https://github.com/RiccardoMPesce)
 ### Contribute
 You can help us [opening a new issue](https://github.com/Helias/Car-Model-Recognition/issues/new) to report a bug or a suggestion  
 
